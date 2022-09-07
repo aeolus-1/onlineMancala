@@ -52,6 +52,7 @@ var GameState = {
         var newToken = new gameToken(pos.x,pos.y)
 
         newToken.dep = dep
+        console.log(newToken.dep)
 
         state.gameTokens.push(newToken)
         state.deps[dep].push(newToken)
@@ -129,6 +130,8 @@ class gameToken {
     constructor(x, y) {
         this.pos = {x:x,y:y}
         this.target = {...this.pos}
+
+        
 
         this.id = `${Math.random()}`
     }
