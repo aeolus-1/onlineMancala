@@ -1,6 +1,9 @@
 var images = new (function(){
     this.background = document.createElement("img");this.background.src = "./backgroundImage.jpeg"
 
+    this.token = document.createElement("img");this.token.src = "./token.png"
+
+
 })()
 
 
@@ -20,12 +23,8 @@ function draw(state) {
 
     for (let i = 0; i < state.gameTokens.length; i++) {
         const token = state.gameTokens[i];
-        ctx.beginPath()
-
-        ctx.arc(token.pos.x,token.pos.y, 10, 0, Math.PI*2)
-
-        ctx.closePath()
-        ctx.fill()
+        var size = 25
+        ctx.drawImage(images.token, token.pos.x-(size/2), token.pos.y-(size/2), size, size)
     }
 
     var string = ((window.isTurn)?"Make your move":"Wait for the other player"),

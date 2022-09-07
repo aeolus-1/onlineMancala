@@ -91,7 +91,7 @@ var GameState = {
             for (let j = 0; j < state.gameTokens.length; j++) {
                 var token2 = state.gameTokens[j],
                     dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2)))
-                if (dst <= 20 && token.id != token2.id) {
+                if (dst <= 25 && token.id != token2.id) {
                     var angle = (Math.random()*0.1)+Math.atan2(token.pos.x-token2.pos.x, token.pos.y-token2.pos.y)-(Math.PI/2)
                     token.pos.x += Math.cos(angle)
                     token.pos.y -= Math.sin(angle)
