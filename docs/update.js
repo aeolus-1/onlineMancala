@@ -51,6 +51,7 @@ var GameState = {
 
         var newToken = new gameToken(pos.x,pos.y, dep)
 
+        newToken.dep = dep
 
         state.gameTokens.push(newToken)
         state.deps[dep].push(newToken)
