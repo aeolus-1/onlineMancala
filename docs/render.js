@@ -49,17 +49,20 @@ function draw(state) {
 
 
     }
-    ctx.font = "30px Arial"
+    ctx.font = "20px Arial"
     ctx.fillStyle = "#000"
 
     for (let i = 0; i < renders.length; i++) {
         const render = renders[i];
-        ctx.fillText(render.text, render.x, render.y)
+
+        var string = render.text,
+        width = ctx.measureText(string).width
+        ctx.fillText(string, (-width/2)+render.x, render.y)
     }
     renders = new Array()
     if (lobbyId) {
 
-    var string = ((window.isTurn)?"Make your move":"Wait for the other player"),
+    var string = (otherPlayer)?((window.isTurn)?"Make your move":"Other player's move"):"Waiting for Player 2",
         width = ctx.measureText(string).width
     ctx.fillText(string, -width/2, -330)
 

@@ -158,8 +158,8 @@ function update(state) {
 
             renders.push({
                 text:`${currentState.deps[box.pos].length}`,
-                x:mouse.pos.x+10,
-                y:mouse.pos.y-10,
+                x:(box.width*0.5)+box.x,
+                y:box.y-10,
             })
 
             if (isClick()) {

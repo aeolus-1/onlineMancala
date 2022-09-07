@@ -4,6 +4,8 @@ window.onload = async ()=>{
 
     window.playerTurn = 0
 
+    window.otherPlayer = undefined
+
 
     if (lobbyId != undefined) {
 
@@ -27,6 +29,7 @@ window.onload = async ()=>{
 
         socket.on("returnLobby", (e)=>{
             console.log(e)
+            window.otherPlayer = e.state.p2
             if (e.state.id == lobbyId) {
                 var preLobby = {...currentState}
                 
@@ -63,6 +66,8 @@ window.onload = async ()=>{
             }
         })
 
+        setInterval(refreshGame, 1500)
+
 
     } else {
 
@@ -90,6 +95,15 @@ function l() {
     socket.emit("requestAllLobbys")
 }
 
+window.onbeforeunload = (evt) => {
+    if (lobbyId) {
+        socket.emit("leaveLobby", {
+            lobby:lobbyId,
+            clientId:clientId,
+        })
+    }
+    return true;
+  }
 
 
 function refreshGame() {
@@ -99,5 +113,5 @@ function refreshGame() {
     })
 }
 
-setInterval(refreshGame, 1500)
+
 
