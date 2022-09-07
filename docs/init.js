@@ -52,6 +52,17 @@ window.onload = async ()=>{
             console.log(e)
         })
 
+        socket.on("responseCode", (e)=>{
+            switch (e.code) {
+                case "lobbyFull":
+                    alert("Lobby Full")
+                    break;
+            
+                default:
+                    break;
+            }
+        })
+
 
     } else {
 

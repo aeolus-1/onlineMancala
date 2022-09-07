@@ -6,6 +6,7 @@ var images = new (function(){
 
 })()
 
+var renders = new Array()
 
 
 
@@ -27,9 +28,35 @@ function draw(state) {
 
     for (let i = 0; i < state.gameTokens.length; i++) {
         const token = state.gameTokens[i];
-        var size = 25
+        var size = 20
+
+
+
+        var grd = ctx.createRadialGradient(token.pos.x, token.pos.y, 0, token.pos.x, token.pos.y, size);
+        grd.addColorStop(0, "#000f");
+        grd.addColorStop(0.7, "#0000");
+
+        // Fill with gradient
+        ctx.fillStyle = grd;
+        ctx.fillRect(token.pos.x-100, token.pos.y-100, 200, 200);
+
+
         ctx.drawImage(images.token, token.pos.x-(size/2), token.pos.y-(size/2), size, size)
+
+
+
+
+
+
     }
+    ctx.font = "30px Arial"
+    ctx.fillStyle = "#000"
+
+    for (let i = 0; i < renders.length; i++) {
+        const render = renders[i];
+        ctx.fillText(render.text, render.x, render.y)
+    }
+    renders = new Array()
 
     var string = ((window.isTurn)?"Make your move":"Wait for the other player"),
         width = ctx.measureText(string).width

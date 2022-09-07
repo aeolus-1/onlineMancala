@@ -81,33 +81,43 @@ var GameState = {
         }
     },
     updateTokens(state) {
-        for (let i = 0; i < state.gameTokens.length; i++) {
-            const token = state.gameTokens[i];
-            if (token.target != undefined) {
-                var dst = (Math.sqrt(Math.pow(token.pos.x-token.target.x, 2)+Math.pow(token.pos.y-token.target.y, 2)))
 
-                var box = hitboxes[token.dep],
-                    buffer = 30,
-                    coll = (token.pos.x-buffer > box.x && token.pos.x+buffer < box.x+box.width && token.pos.y-buffer > box.y && token.pos.y+buffer < box.y+box.height)
-
-                if (!coll) {
-                    var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
-                    token.pos.x += Math.cos(angle)*3
-                    token.pos.y -= Math.sin(angle)*3
-                } 
-            }
-            for (let j = 0; j < state.gameTokens.length; j++) {
-                var token2 = state.gameTokens[j],
-                    dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2)))
-                    
-                if (dst <= 25 && token.id != token2.id) {
-                    var angle = (Math.random()*0.1)+Math.atan2(token.pos.x-token2.pos.x, token.pos.y-token2.pos.y)-(Math.PI/2)
-                    token.pos.x += Math.cos(angle)
-                    token.pos.y -= Math.sin(angle)
+        var iterations = 10
+        
+        for (let k = 0; k < iterations; k++) {
+            state.gameTokens = state.gameTokens.sort((a,b)=>{return Math.sign(Math.random()-0.5)})
+            for (let i = 0; i < state.gameTokens.length; i++) {
+                const token = state.gameTokens[i];
+                if (token.target != undefined) {
+                    var dst = (Math.sqrt(Math.pow(token.pos.x-token.target.x, 2)+Math.pow(token.pos.y-token.target.y, 2)))
+    
+                    var box = hitboxes[token.dep],
+                        buffer = 30,
+                        coll = (token.pos.x-buffer > box.x && token.pos.x+buffer < box.x+box.width && token.pos.y-buffer > box.y && token.pos.y+buffer < box.y+box.height)
+    
+                    if (!coll) {
+                        var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
+                        token.pos.x += Math.cos(angle)*(3/iterations)
+                        token.pos.y -= Math.sin(angle)*(3/iterations)
+                    } 
                 }
+                for (let j = 0; j < state.gameTokens.length; j++) {
+                    var token2 = state.gameTokens[j],
+                        dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2)))
+                        
+                    if (dst <= 20 && token.id != token2.id) {
+                        var angle = (Math.random()*0.1)+Math.atan2(token.pos.x-token2.pos.x, token.pos.y-token2.pos.y)-(Math.PI/2),
+                            diff = 20-dst
+                        token.pos.x += Math.cos(angle)*diff*0.25
+                        token.pos.y -= Math.sin(angle)*diff*0.25
+                        token2.pos.x -= Math.cos(angle)*diff*0.25
+                        token2.pos.y += Math.sin(angle)*diff*0.25
+                    }
+                }
+    
             }
-
         }
+        
     },
     
     makeMove(state, dep, turn) {
@@ -142,19 +152,28 @@ function update(state) {
     for (let i = 0; i < hitboxes.length; i++) {
         const box = hitboxes[i];
 
-        if (isClick() && mouse.pos.x > box.x && mouse.pos.x < box.x+box.width && mouse.pos.y > box.y && mouse.pos.y < box.y+box.height) {
-            if (window.socket != undefined) {
-                if (currentState.turn == playerTurn) {
+        if (mouse.pos.x > box.x && mouse.pos.x < box.x+box.width && mouse.pos.y > box.y && mouse.pos.y < box.y+box.height) {
 
-                    socket.emit("submitMove", {
-                        lobby:lobbyId,
-                        clientId:clientId,
-                        pos:box.pos,
-                    })
+            renders.push({
+                text:`${currentState.deps[box.pos].length}`,
+                x:mouse.pos.x+10,
+                y:mouse.pos.y-10,
+            })
+
+            if (isClick()) {
+                if (window.socket != undefined) {
+                    if (currentState.turn == playerTurn) {
+
+                        socket.emit("submitMove", {
+                            lobby:lobbyId,
+                            clientId:clientId,
+                            pos:box.pos,
+                        })
+                    }
+                } else {
+                    GameState.makeMove(currentState, box.pos, currentState.turn)
+                    playerTurn = currentState.turn
                 }
-            } else {
-                GameState.makeMove(currentState, box.pos, currentState.turn)
-                playerTurn = currentState.turn
             }
             
         }
