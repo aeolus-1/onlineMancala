@@ -49,7 +49,7 @@ function draw(state) {
 
 
     }
-    ctx.font = "20px Arial"
+    ctx.font = "25px Shadows Into Light"
     ctx.fillStyle = "#000"
 
     for (let i = 0; i < renders.length; i++) {
@@ -76,6 +76,4 @@ function draw(state) {
 }
 
 
-setInterval(()=>{
-    draw(currentState)
-}, 1000/30)
+

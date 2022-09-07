@@ -28,9 +28,8 @@ window.onload = async ()=>{
 
 
         socket.on("returnLobby", (e)=>{
-            console.log(e)
             window.otherPlayer = e.state.p2
-            if (e.state.id == lobbyId) {
+            if (e.state.id == lobbyId && otherPlayer) {
                 var preLobby = {...currentState}
                 
                 window.isTurn = e.turn
@@ -59,6 +58,7 @@ window.onload = async ()=>{
             switch (e.code) {
                 case "lobbyFull":
                     alert("Lobby Full")
+                    window.open("./index.html", "_self")
                     break;
             
                 default:
@@ -87,6 +87,10 @@ window.onload = async ()=>{
 
 
     }
+
+    setInterval(()=>{
+        draw(currentState)
+    }, 1000/30)
 
 
 }

@@ -4,21 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mancala</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Shadows+Into+Light">
+    
+    <style>
+        button {
+            width: 300px;
+            height:150px;
+            margin: 50px;
+
+            margin-top: 15%;
+        }
+        html {
+            height:100%;
+
+        }
+        body {
+            text-align: center;
+
+        }
+        button {
+            text-align: center;
+            font-family: 'Shadows Into Light', serif;
+            font-size: 50px;
+        }
+    </style>
 </head>
 <body>
+   
 
     <script src="index.js"></script>
 
     <button onclick="(function(){
-        window.open(`./game.html`)
+        window.open(`./game.html`, '_self')
         return false;
     })();return false;">Play Bot</button>
     <button onclick="(function(){
-        window.open(`./game.html#${getLobbyCode()}`)
+        window.open(`./game.html#${getLobbyCode()}`, '_self')
         return false;
     })();return false;">Create Versus</button>
     <button onclick="(function(){
-        window.open(`./game.html#${prompt('room code?').toUpperCase()}`)
+        window.open(`./game.html#${prompt('room code?').toUpperCase()}`, '_self')
         return false;
     })();return false;">Join Versus</button>
 

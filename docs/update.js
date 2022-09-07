@@ -162,7 +162,7 @@ function update(state) {
                 y:box.y-10,
             })
 
-            if (isClick()) {
+            if (isClick() && !(!!lobbyId && !otherPlayer)) {
                 if (window.socket != undefined) {
                     if (currentState.turn == playerTurn) {
 
