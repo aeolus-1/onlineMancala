@@ -51,6 +51,8 @@ var GameState = {
 
         var newToken = new gameToken(pos.x,pos.y)
 
+        newToken.dep = dep
+
         state.gameTokens.push(newToken)
         state.deps[dep].push(newToken)
 
@@ -66,6 +68,7 @@ var GameState = {
 
 
             token.target = {x:hitbox.x+(hitbox.width/2),y:hitbox.y+(hitbox.height/2)}
+            token.dep = targetDep
             for (let j = 0; j < tokens.length; j++) {
                 if (tokens[j].id == token.id) {
                     tokens.splice(j, 1)
@@ -82,7 +85,12 @@ var GameState = {
             const token = state.gameTokens[i];
             if (token.target != undefined) {
                 var dst = (Math.sqrt(Math.pow(token.pos.x-token.target.x, 2)+Math.pow(token.pos.y-token.target.y, 2)))
-                if (dst > 30) {
+
+                var box = hitboxes[token.dep],
+                    buffer = 30,
+                    coll = (token.pos.x-buffer > box.x && token.pos.x+buffer < box.x+box.width && token.pos.y-buffer > box.y && token.pos.y+buffer < box.y+box.height)
+
+                if (!coll) {
                     var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
                     token.pos.x += Math.cos(angle)*3
                     token.pos.y -= Math.sin(angle)*3
@@ -91,6 +99,7 @@ var GameState = {
             for (let j = 0; j < state.gameTokens.length; j++) {
                 var token2 = state.gameTokens[j],
                     dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2)))
+                    
                 if (dst <= 25 && token.id != token2.id) {
                     var angle = (Math.random()*0.1)+Math.atan2(token.pos.x-token2.pos.x, token.pos.y-token2.pos.y)-(Math.PI/2)
                     token.pos.x += Math.cos(angle)
@@ -134,17 +143,20 @@ function update(state) {
         const box = hitboxes[i];
 
         if (isClick() && mouse.pos.x > box.x && mouse.pos.x < box.x+box.width && mouse.pos.y > box.y && mouse.pos.y < box.y+box.height) {
-            if (currentState.turn == playerTurn) {
-                if (window.socket != undefined) {
+            if (window.socket != undefined) {
+                if (currentState.turn == playerTurn) {
+
                     socket.emit("submitMove", {
                         lobby:lobbyId,
                         clientId:clientId,
                         pos:box.pos,
                     })
-                } else {
-                    GameState.makeMove(currentState, box.pos, playerTurn)
                 }
+            } else {
+                GameState.makeMove(currentState, box.pos, currentState.turn)
+                playerTurn = currentState.turn
             }
+            
         }
 
     }

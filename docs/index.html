@@ -9,7 +9,10 @@
 
     <script src="index.js"></script>
 
-    <button>Play Bot</button>
+    <button onclick="(function(){
+        window.open(`./game.html`)
+        return false;
+    })();return false;">Play Bot</button>
     <button onclick="(function(){
         window.open(`./game.html#${getLobbyCode()}`)
         return false;

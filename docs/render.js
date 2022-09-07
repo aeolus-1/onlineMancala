@@ -17,9 +17,13 @@ function draw(state) {
     ctx.clearRect(0,0,canvas.width, canvas.height)
 
     ctx.translate(window.innerWidth/2,window.innerHeight/2)
+    ctx.save()
+    ctx.scale(-1, 1)
+    if (!!(window.player-1)) {ctx.scale(-1, -1)}
 
     ctx.drawImage(images.background, images.background.width*-0.5, images.background.height*-0.5)
 
+    ctx.restore()
 
     for (let i = 0; i < state.gameTokens.length; i++) {
         const token = state.gameTokens[i];

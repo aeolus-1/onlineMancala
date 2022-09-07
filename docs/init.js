@@ -31,6 +31,7 @@ window.onload = async ()=>{
                 var preLobby = {...currentState}
                 
                 window.isTurn = e.turn
+                window.player = e.player
                 currentState = e.state.state
 
                 for (let i = 0; i < currentState.gameTokens.length; i++) {
