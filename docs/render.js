@@ -57,10 +57,16 @@ function draw(state) {
         ctx.fillText(render.text, render.x, render.y)
     }
     renders = new Array()
+    if (lobbyId) {
 
     var string = ((window.isTurn)?"Make your move":"Wait for the other player"),
         width = ctx.measureText(string).width
     ctx.fillText(string, -width/2, -330)
+
+        var string = `Lobby Code: ${lobbyId}`,
+            width = ctx.measureText(string).width
+        ctx.fillText(string, -width/2, 330)
+    }
     
 
     ctx.restore()
