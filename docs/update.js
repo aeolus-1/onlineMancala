@@ -82,7 +82,7 @@ var GameState = {
     },
     updateTokens(state) {
 
-        var iterations = 10
+        var iterations = 100
         
         for (let k = 0; k < iterations; k++) {
             state.gameTokens = state.gameTokens.sort((a,b)=>{return Math.sign(Math.random()-0.5)})
@@ -92,22 +92,28 @@ var GameState = {
                     var dst = (Math.sqrt(Math.pow(token.pos.x-token.target.x, 2)+Math.pow(token.pos.y-token.target.y, 2)))
     
                     var box = hitboxes[token.dep],
-                        buffer = 30,
+                        buffer = 25,
                         coll = (token.pos.x-buffer > box.x && token.pos.x+buffer < box.x+box.width && token.pos.y-buffer > box.y && token.pos.y+buffer < box.y+box.height)
     
                     if (!coll) {
                         var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
                         token.pos.x += Math.cos(angle)*(3/iterations)
                         token.pos.y -= Math.sin(angle)*(3/iterations)
-                    } 
+                    } /*else {
+                        var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
+                        token.pos.x += Math.cos(angle)*(3/iterations)*0.1
+                        token.pos.y -= Math.sin(angle)*(3/iterations)*0.1
+                    }*/
                 }
                 for (let j = 0; j < state.gameTokens.length; j++) {
                     var token2 = state.gameTokens[j],
-                        dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2)))
+                        dst = (Math.sqrt(Math.pow(token.pos.x-token2.pos.x, 2)+Math.pow(token.pos.y-token2.pos.y, 2))),
+
+                        thres = 22
                         
-                    if (dst <= 20 && token.id != token2.id) {
+                    if (dst <= thres && token.id != token2.id) {
                         var angle = (Math.random()*0.1)+Math.atan2(token.pos.x-token2.pos.x, token.pos.y-token2.pos.y)-(Math.PI/2),
-                            diff = 20-dst
+                            diff = thres-dst
                         token.pos.x += Math.cos(angle)*diff*0.25
                         token.pos.y -= Math.sin(angle)*diff*0.25
                         token2.pos.x -= Math.cos(angle)*diff*0.25
@@ -123,6 +129,27 @@ var GameState = {
     makeMove(state, dep, turn) {
         GameState.moveTokens(state, dep)
         state.turn = (turn+1)%2
+    },
+
+    runAI(state, targetDep, enemyDep) {
+        var options = []
+        for (let i = 0; i < 14; i++) {
+            var l = Math.abs(14-(targetDep+i))%14
+            console.log(l)
+            if (state.deps[l].length > 0 && l%7!=0) {
+                options.push({
+                    dep:l,
+                    dst:Math.abs(state.deps[l].length-i),
+                    len:state.deps[l].length
+                })
+            }
+        }
+        options = options.sort((a,b)=>{
+            return Math.sign(a.dst-b.dst)
+        })
+        
+        console.log(options)
+        return options[0].dep
     },
 }
 class gameToken {
@@ -173,8 +200,13 @@ function update(state) {
                         })
                     }
                 } else {
-                    GameState.makeMove(currentState, box.pos, currentState.turn)
-                    playerTurn = currentState.turn
+                    if (currentState.turn == playerTurn) {
+                        GameState.makeMove(currentState, box.pos, currentState.turn)
+                        setTimeout(() => {
+                            GameState.makeMove(currentState, GameState.runAI(currentState, 7), 1)
+                        }, 1000);
+                    }
+                    //playerTurn = (currentState.turn+1)%2
                 }
             }
             
