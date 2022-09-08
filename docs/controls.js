@@ -22,3 +22,14 @@ document.addEventListener("mousedown",(e)=>{
 document.addEventListener("mouseup",(e)=>{
     mouse.down = false
 })
+
+document.addEventListener("touchstart", (e)=>{
+    mouse.down = true
+})
+document.addEventListener("touchend", (e)=>{
+    mouse.down = false
+})
+document.addEventListener("touchmove", (e)=>{
+    mouse.pos.x = e.touches[0].clientX-(window.innerWidth/2)
+    mouse.pos.y = e.touches[0].clientX-(window.innerHeight/2)
+})
