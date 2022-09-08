@@ -1,4 +1,4 @@
-
+function c(e) {return JSON.parse(JSON.stringify(e))}
 let depDim = {
     width:110,
     height:133,
@@ -62,7 +62,6 @@ var GameState = {
             l = 0
         for (let i = 0; i < tokens.length; i++,l++) {
             const token = tokens[i];
-            console.log(token)
             var targetDep = (dep+l+1)%14,
                 hitbox = hitboxes[targetDep]
 
@@ -129,9 +128,19 @@ var GameState = {
     makeMove(state, dep, turn) {
         GameState.moveTokens(state, dep)
         state.turn = (turn+1)%2
+        return state
+    },
+
+    testForWin(state, player) {
+        if (state.deps[0].length+state.deps[7].length>= 48) {
+            return Math.sign(state.deps[0].length-state.deps[7].length)*-(-1+(player*2))
+        } else {
+            return false
+        }
     },
 
     runAI(state, targetDep, enemyDep) {
+        /*
         var options = []
         for (let i = 0; i < 14; i++) {
             var l = Math.abs(14-(targetDep+i))%14
@@ -150,6 +159,64 @@ var GameState = {
         
         console.log(options)
         return options[0].dep
+        */
+       function finalScore(board) {
+           return board.deps[7].length-board.deps[0].length
+       }
+       function getMoves(board, player) {
+           var moves = new Array()
+           for (let i = 0; i < 14; i++) {
+               if (i!=0&&i!=7&&board.deps[i].length>0) {
+                moves.push(i)
+               }
+               
+           }
+           return moves
+       }
+       function updateBoard(board, move, player) {
+           var board = GameState.makeMove({...board} , move, 0)
+           return {
+               newBoard:board,
+               player:(player+1)%2
+           }
+       }
+
+       function maxMinMove(board, player, depth, maxForPlayer) {
+        // When we can't make any more moves, just calculate the "final score" of the board.
+        if (depth === -1) {
+          return [null, finalScore(board, maxForPlayer)];
+        }
+
+        // Get our list of possible moves and set a default we'll definitely beat.
+        const moves = getMoves(board, player);
+        const maximise = maxForPlayer === player;
+        const worstScore = maximise ? -Infinity : Infinity;
+        let bestMove = [moves[0], worstScore];
+
+        for (let move of moves) {
+
+          // Get the next board state with each move.
+          const nextState = updateBoard(c(board), move, player);
+      
+          // Get the next min/max score for the board created by this move.
+
+          const [_, score] = maxMinMove(c(nextState.newBoard), nextState.player, depth - 1, maxForPlayer);
+      
+          // If we're maximising, set the new max; if minimising likewise.
+          const setNewMax = maximise && score >= bestMove[1];
+          const setNewMin = (!maximise) && score <= bestMove[1];
+          if (setNewMax || setNewMin) {
+            bestMove = [move, score];
+          }
+        }
+      
+        return bestMove;
+      }
+      console.time()
+      var s = maxMinMove(JSON.parse(JSON.stringify(currentState)), 1, 2, 1)
+      console.timeEnd()
+      console.log(s)
+      return s[0]
     },
 }
 class gameToken {
@@ -171,7 +238,8 @@ function submitMove(dep) {
 }
 
 
-var currentState = new gameState()
+var currentState = new gameState(),
+    win = false
 
 
 
@@ -215,6 +283,17 @@ function update(state) {
     }
 
     GameState.updateTokens(state)
+
+    if (win == false) {
+        var winner = GameState.testForWin(currentState, 0)
+        if (winner !== false) {
+            win = true
+            window.onbeforeunload = undefined
+            setTimeout(() => {
+                window.open(`./gameOver.html#${winner}`,  "_self")
+            }, 1000);
+        }
+    }
 
 
     setPreControls()

@@ -77,6 +77,7 @@ window.onload = async ()=>{
                 GameState.addToken(currentState, i+1)
 
             }
+            
         }
         for (let i = 0; i < 6; i++) {
             for (let j = 0; j < 4; j++) {
