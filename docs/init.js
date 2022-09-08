@@ -10,7 +10,7 @@ window.onload = async ()=>{
     if (lobbyId != undefined) {
 
         
-        window.socket = io("https://socketioserver-aeolus.herokuapp.com/")
+        window.socket = io("https://trianglegameserver.glitch.me/")
         if (navigator.onLine) {
             console.log("connected")
 
@@ -47,6 +47,10 @@ window.onload = async ()=>{
                 }
 
             }
+
+            setTimeout(() => {
+                refreshGame()
+            }, 250);
             
         })
 
@@ -66,7 +70,7 @@ window.onload = async ()=>{
             }
         })
 
-        setInterval(refreshGame, 1500)
+  
 
 
     } else {
