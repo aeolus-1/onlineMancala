@@ -257,7 +257,7 @@ function update(state) {
                 y:box.y-10,
             })
 
-            if (isClick() && !(!!lobbyId && !otherPlayer)) {
+            if (isClick() && !(!!lobbyId && !otherPlayer) && i!=0&&i!=7 && currentState.deps[box.pos].length>0) {
                 if (window.socket != undefined) {
                     if (currentState.turn == playerTurn) {
 
