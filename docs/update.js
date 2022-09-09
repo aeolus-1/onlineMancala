@@ -272,7 +272,7 @@ function update(state) {
                         GameState.makeMove(currentState, box.pos, currentState.turn)
                         setTimeout(() => {
                             GameState.makeMove(currentState, GameState.runAI(currentState, 7), 1)
-                        }, 1000);
+                        }, 500);
                     }
                     //playerTurn = (currentState.turn+1)%2
                 }
