@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mancala</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Shadows+Into+Light">
-    
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+
     <style>
         button {
             width: 300px;
             height:150px;
             margin: 50px;
 
-            margin-top: 15%;
+            
         }
         html {
             height:100%;
@@ -22,6 +23,8 @@
             text-align: center;
             overflow: hidden;
             margin: 0%;
+            font-family: 'Shadows Into Light', serif;
+
 
         }
         button {
@@ -36,10 +39,18 @@
 
     <script src="index.js"></script>
 
+    <h1>Mancala</h1>
+    <h3>Made by me</h3>
+
     <button onclick="(function(){
         window.open(`./game.html`, '_self')
         return false;
-    })();return false;">Play Bot</button>
+    })();return false;">Play Bot</button><br>
+        <div id="onlineButtonsText">
+            Connecting to Server...
+        </div>
+
+    <div id="onlineButtons" style="display:none;">
     <button onclick="(function(){
         window.open(`./game.html#${getLobbyCode()}`, '_self')
         return false;
@@ -48,6 +59,6 @@
         window.open(`./game.html#${prompt('room code?').toUpperCase()}`, '_self')
         return false;
     })();return false;">Join Versus</button>
-
+    </div>
 </body>
 </html>

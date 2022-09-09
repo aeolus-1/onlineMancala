@@ -73,3 +73,13 @@ function getLobbyCode() {
     return `${randChar()}${randChar()}${randChar()}${randChar()}`
 }
 
+var socket = io("https://socketioserver-aeolus.herokuapp.com/")
+
+setInterval(() => {
+    if (socket.connected) {
+        document.getElementById("onlineButtonsText").style.display = "none"
+
+        document.getElementById("onlineButtons").style.display = ""
+    }
+}, 20);
+
