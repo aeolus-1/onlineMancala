@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mancala</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Shadows+Into+Light">
+
     <style>
         html {
             height:100%;
@@ -12,6 +13,9 @@
         body {
             overflow: hidden;
             margin: 0%;
+            text-align: center;
+            font-family: 'Shadows Into Light', serif;
+
         }
         canvas {
             position:absolute;
@@ -23,6 +27,13 @@
             font-family: 'Shadows Into Light', serif;
             font-size: 20px;
             left:0%;
+            top: 0%;
+        }
+        input {
+            position:absolute;
+            transform: translate(-50%, 0%);
+            z-index: 10;
+
         }
     </style>
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
@@ -95,8 +106,17 @@ setInterval(() => {
     document.body.style["background-image"] = `linear-gradient(to bottom right, ${getColor((dateMod*colors.length))}, ${getColor((dateMod*colors.length)+1)})`
 }, 1000/60);
     </script>
-
     <canvas id="c"></canvas>
+
+    <div id="botSelection" style="display: none;">
+        Bsot Skill Level<br>
+        <input onchange="(function(){
+            document.getElementById('botSelection').childNodes[0].textContent = `Bot Skill Level: ${document.getElementById('botSelection').children[1].value}`
+            return false;
+        })();return false;"type="range" min="0" max="1" step="0.05" id="">
+
+    </div>
+
 
     <script src="canvas.js"></script>
     <script src="render.js"></script>

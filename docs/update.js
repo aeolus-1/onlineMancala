@@ -1,4 +1,7 @@
 function c(e) {return JSON.parse(JSON.stringify(e))}
+function sO(t, n) {
+    return ((t % n) + n) % n;
+  }
 let depDim = {
     width:110,
     height:133,
@@ -62,7 +65,7 @@ var GameState = {
             l = 0
         for (let i = 0; i < tokens.length; i++,l++) {
             const token = tokens[i];
-            var targetDep = (dep+l+1)%14,
+            var targetDep = sO(dep-l-1, 14),
                 hitbox = hitboxes[targetDep]
 
 
@@ -139,7 +142,7 @@ var GameState = {
         }
     },
 
-    runAI(state, targetDep, enemyDep) {
+    runAI(upsetPercent, upsetRange) {
         /*
         var options = []
         for (let i = 0; i < 14; i++) {
@@ -161,7 +164,8 @@ var GameState = {
         return options[0].dep
         */
        function finalScore(board) {
-           return board.deps[7].length-board.deps[0].length
+           var rand = (Math.random()<upsetPercent?Math.round((Math.random()-0.5)*upsetRange):0)
+           return (board.deps[7].length-board.deps[0].length)+rand
        }
        function getMoves(board, player) {
            var moves = new Array()
@@ -181,17 +185,20 @@ var GameState = {
            }
        }
 
-       function maxMinMove(board, player, depth, maxForPlayer) {
+       function maxMinMove(board, player, depth, maxForPlayer, level) {
         // When we can't make any more moves, just calculate the "final score" of the board.
-        if (depth === -1) {
-          return [null, finalScore(board, maxForPlayer)];
-        }
+       
 
         // Get our list of possible moves and set a default we'll definitely beat.
         const moves = getMoves(board, player);
         const maximise = maxForPlayer === player;
         const worstScore = maximise ? -Infinity : Infinity;
         let bestMove = [moves[0], worstScore];
+
+        if (depth === -1) {
+            return [null, finalScore(board, maxForPlayer)];
+          }
+          
 
         for (let move of moves) {
 
@@ -200,20 +207,21 @@ var GameState = {
       
           // Get the next min/max score for the board created by this move.
 
-          const [_, score] = maxMinMove(c(nextState.newBoard), nextState.player, depth - 1, maxForPlayer);
+          const [_, score] = maxMinMove(c(nextState.newBoard), nextState.player, depth - 1, maxForPlayer, level);
       
           // If we're maximising, set the new max; if minimising likewise.
-          const setNewMax = maximise && score >= bestMove[1];
+          const setNewMax = maximise && score > bestMove[1];
           const setNewMin = (!maximise) && score <= bestMove[1];
           if (setNewMax || setNewMin) {
             bestMove = [move, score];
           }
+
         }
       
         return bestMove;
       }
       console.time()
-      var s = maxMinMove(JSON.parse(JSON.stringify(currentState)), 1, 2, 1)
+      var s = maxMinMove(JSON.parse(JSON.stringify(currentState)), 1, 2, 1, 0)
       console.timeEnd()
       console.log(s)
       return s[0]
@@ -271,8 +279,9 @@ function update(state) {
                     if (currentState.turn == playerTurn) {
                         GameState.makeMove(currentState, box.pos, currentState.turn)
                         setTimeout(() => {
-                            GameState.makeMove(currentState, GameState.runAI(currentState, 7), 1)
-                        }, 500);
+                            var skill = 1-parseFloat(document.getElementById("botSelection").children[1].value)
+                            GameState.makeMove(currentState, GameState.runAI(skill, 10*(skill)), 1)
+                        }, 1);
                     }
                     //playerTurn = (currentState.turn+1)%2
                 }
@@ -290,7 +299,7 @@ function update(state) {
             win = true
             window.onbeforeunload = undefined
             setTimeout(() => {
-                window.open(`./gameOver.html#${winner}`,  "_self")
+                window.open(`./gameOver.html#${winner}_${currentState.deps[0].length}-${currentState.deps[7].length}`,  "_self")
             }, 1000);
         }
     }

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mancala</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Shadows+Into+Light">
-    
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+
     <style>
 
         button {
@@ -36,7 +37,7 @@
     </style>
 </head>
 <body>
-   
+   <script>var noIndex = true</script>
 
     <script src="index.js"></script>
 
@@ -50,10 +51,13 @@
 
 
     <script>
-        var score = location.href.split("#")[1]
+        var score = location.href.split("#")[1],
+
+            by = score.split("_")[1],
+            score = score.split("_")[0]
         if (score != undefined) {
 
-            document.getElementById("h").innerHTML = `${["You Lost", "You guys tied", "You Won!"][parseInt(score)+1]}<br>👍`
+            document.getElementById("h").innerHTML = `${["You Lost", "You guys tied", "You Won!"][parseInt(score)+1]}<br>${by}<br>👍`
         } else {
             document.getElementById("h").innerHTML = `You either glitched here or did something funky`
         }

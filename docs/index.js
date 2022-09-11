@@ -76,7 +76,7 @@ function getLobbyCode() {
 var socket = io("https://socketioserver-aeolus.herokuapp.com/")
 
 setInterval(() => {
-    if (socket.connected) {
+    if (socket.connected && !window.noIndex) {
         document.getElementById("onlineButtonsText").style.display = "none"
 
         document.getElementById("onlineButtons").style.display = ""

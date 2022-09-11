@@ -19,7 +19,7 @@ function draw(state) {
 
     ctx.translate(window.innerWidth/2,window.innerHeight/2)
     ctx.save()
-    ctx.scale(-1, 1)
+    ctx.scale(-1, -1)
     if (!!(window.player-1)) {ctx.scale(-1, -1)}
 
     ctx.drawImage(images.background, images.background.width*-0.5, images.background.height*-0.5)
