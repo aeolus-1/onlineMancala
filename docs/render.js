@@ -50,6 +50,11 @@ function draw(state) {
 
     }
 
+    ctx.font = `${25}px Shadows Into Light`
+    ctx.fillStyle = "#000"
+
+
+
     for (let i = 0; i < renders.length; i++) {
         var render = renders[i];
 
