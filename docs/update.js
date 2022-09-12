@@ -138,8 +138,8 @@ var GameState = {
     
                     if (!coll) {
                         var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
-                        token.pos.x += Math.cos(angle)*(3/iterations)
-                        token.pos.y -= Math.sin(angle)*(3/iterations)
+                        token.pos.x += Math.cos(angle)*(3/iterations)*1.5
+                        token.pos.y -= Math.sin(angle)*(3/iterations)*1.5
                     }
                 }
                 for (let j = 0; j < state.gameTokens.length; j++) {
