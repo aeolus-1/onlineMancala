@@ -60,9 +60,16 @@ var GameState = {
         state.deps[dep].push(newToken)
 
     },
-    moveTokens(state,dep) {
+    moveTokens(state,dep, turn) {
         var tokens = state.deps[dep],
-            l = 0
+            l = 0,
+            repeatTurn = false
+
+        var endDep = sO(dep-state.deps[dep].length, 14),
+            moveTokensRule = state.deps[endDep].length==0 && endDep!=0&&endDep!=7
+
+        repeatTurn = (endDep==-((turn-1)*7))
+        
         for (let i = 0; i < tokens.length; i++,l++) {
             const token = tokens[i];
             var targetDep = sO(dep-l-1, 14),
@@ -79,8 +86,40 @@ var GameState = {
                     break
                 }
             }
+            
             state.deps[targetDep].push(token)
         }
+
+        if (moveTokensRule) {
+            var opp = sO(14-endDep, 14),
+                oppDep = state.deps[opp]
+                console.log("move", opp)
+            
+            for (let i = 0; i < oppDep.length; i++) {
+                const token = oppDep[i];
+                var hitbox = hitboxes[endDep]
+
+                token.target = {x:hitbox.x+(hitbox.width/2),y:hitbox.y+(hitbox.height/2)}
+                token.dep = endDep
+                for (let j = 0; j < oppDep.length; j++) {
+                    if (oppDep[j].id == token.id) {
+                        oppDep.splice(j, 1)
+                        i--
+                        
+                        break
+                    }
+                }
+                state.deps[endDep].push(token)
+
+                //token.pos = {x:0,y:0}
+            }
+            
+        }
+
+        return {
+            turn:(repeatTurn)?turn:(turn+1)%2
+        }
+        
     },
     updateTokens(state) {
 
@@ -101,11 +140,7 @@ var GameState = {
                         var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
                         token.pos.x += Math.cos(angle)*(3/iterations)
                         token.pos.y -= Math.sin(angle)*(3/iterations)
-                    } /*else {
-                        var angle = Math.atan2(token.pos.x-token.target.x, token.pos.y-token.target.y)+(Math.PI/2)
-                        token.pos.x += Math.cos(angle)*(3/iterations)*0.1
-                        token.pos.y -= Math.sin(angle)*(3/iterations)*0.1
-                    }*/
+                    }
                 }
                 for (let j = 0; j < state.gameTokens.length; j++) {
                     var token2 = state.gameTokens[j],
@@ -129,14 +164,13 @@ var GameState = {
     },
     
     makeMove(state, dep, turn) {
-        GameState.moveTokens(state, dep)
-        state.turn = (turn+1)%2
+        state.turn = GameState.moveTokens(state, dep, turn).turn
         return state
     },
 
     testForWin(state, player) {
         if (state.deps[0].length+state.deps[7].length>= 48) {
-            return Math.sign(state.deps[0].length-state.deps[7].length)*-(-1+(player*2))
+            return Math.sign(state.deps[7].length-state.deps[0].length)*-(-1+(player*2))
         } else {
             return false
         }
@@ -165,7 +199,7 @@ var GameState = {
         */
        function finalScore(board) {
            var rand = (Math.random()<upsetPercent?Math.round((Math.random()-0.5)*upsetRange):0)
-           return (board.deps[7].length-board.deps[0].length)+rand
+           return (board.deps[0].length-board.deps[7].length)+rand
        }
        function getMoves(board, player) {
            var moves = new Array()
@@ -178,10 +212,10 @@ var GameState = {
            return moves
        }
        function updateBoard(board, move, player) {
-           var board = GameState.makeMove({...board} , move, 0)
+           var board = GameState.makeMove({...board} , move, player)
            return {
                newBoard:board,
-               player:(player+1)%2
+               player:board.turn
            }
        }
 
@@ -264,6 +298,22 @@ function update(state) {
                 x:(box.width*0.5)+box.x,
                 y:box.y-10,
             })
+            if (box.pos!=0&&box.pos!=7) {
+                for (let i = 0; i < currentState.deps[box.pos].length; i++) {
+                    
+                    var hitbox = hitboxes[sO(box.pos-i-1, 14)]
+                        newPos = {x:hitbox.x+(hitbox.width/2),y:hitbox.y+(hitbox.height/2)}
+
+                        renders.push({
+                            text:`+ 1`,
+                            x:newPos.x,
+                            y:newPos.y,
+
+                            color:"#600",
+                            size:35,
+                        })
+                }
+            }
 
             if (isClick() && !(!!lobbyId && !otherPlayer) && i!=0&&i!=7 && currentState.deps[box.pos].length>0) {
                 if (window.socket != undefined) {
@@ -276,12 +326,23 @@ function update(state) {
                         })
                     }
                 } else {
-                    if (currentState.turn == playerTurn) {
-                        GameState.makeMove(currentState, box.pos, currentState.turn)
-                        setTimeout(() => {
-                            var skill = 1-parseFloat(document.getElementById("botSelection").children[1].value)
-                            GameState.makeMove(currentState, GameState.runAI(skill, 10*(skill)), 1)
-                        }, 1);
+                    if (playerTurn == currentState.turn) {
+                        GameState.makeMove(currentState, box.pos, playerTurn)
+                        
+                        if (currentState.turn!=playerTurn) {
+                            var botTurn = () => {
+                                var skill = 1-parseFloat(document.getElementById("botSelection").children[1].value)
+                                GameState.makeMove(currentState, GameState.runAI(skill, 10*(skill)), 1)
+                                if (currentState.turn!=playerTurn) {
+                                    setTimeout(botTurn, 1000);
+    
+                                }
+                            }
+
+                            setTimeout(botTurn, 1000);
+
+                            
+                        }
                     }
                     //playerTurn = (currentState.turn+1)%2
                 }

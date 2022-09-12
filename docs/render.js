@@ -49,15 +49,31 @@ function draw(state) {
 
 
     }
-    ctx.font = "25px Shadows Into Light"
-    ctx.fillStyle = "#000"
 
     for (let i = 0; i < renders.length; i++) {
-        const render = renders[i];
+        var render = renders[i];
+
+        render = {
+            text:"help",
+            x:0,
+            y:0,
+            color:"#000",
+            size:25,
+
+            ...render,
+        }
+
+        ctx.font = `bold ${render.size}px Shadows Into Light`
+        ctx.fillStyle = render.color
+        ctx.strokeStyle = "#fff"
+
 
         var string = render.text,
         width = ctx.measureText(string).width
+        ctx.strokeText(string, (-width/2)+render.x, render.y)
+        ctx.font = `${render.size}px Shadows Into Light`
         ctx.fillText(string, (-width/2)+render.x, render.y)
+
     }
     renders = new Array()
     if (lobbyId) {
