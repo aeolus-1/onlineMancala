@@ -54,7 +54,7 @@ function draw(state) {
     ctx.fillStyle = "#000"
 
 
-
+    ctx.save()
     for (let i = 0; i < renders.length; i++) {
         var render = renders[i];
 
@@ -80,6 +80,7 @@ function draw(state) {
         ctx.fillText(string, (-width/2)+render.x, render.y)
 
     }
+    ctx.restore()
     renders = new Array()
     if (lobbyId) {
 
