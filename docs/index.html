@@ -48,7 +48,19 @@
         return false;
     })();return false;">Play Bot</button><br>
         <div id="onlineButtonsText">
-            Connecting to Server...
+            Connecting to Server...<br>
+            <div id="idle" style="display: none;">The server may be Idle and will take some time to wake up</div>
+            <script>
+                var startTime = new Date().getTime()
+                setInterval(() => {
+                    if ((new Date().getTime())-startTime>5000) {
+                        document.getElementById("idle").style.display = ""
+                    }
+                }, 100);
+                setInterval(() => {
+                    socket = io("https://socketioserver-aeolus.herokuapp.com/")
+                }, 3000);
+            </script>
         </div>
 
     <div id="onlineButtons" style="display:none;">

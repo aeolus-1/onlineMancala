@@ -6,7 +6,9 @@ var images = new (function(){
 
 })()
 
-var renders = new Array()
+var renders = new Array(),
+
+    renderScale = {x:1,y:1}
 
 
 
@@ -18,9 +20,19 @@ function draw(state) {
     ctx.clearRect(0,0,canvas.width, canvas.height)
 
     ctx.translate(window.innerWidth/2,window.innerHeight/2)
+
     ctx.save()
+
     ctx.scale(-1, -1)
-    if (!!(window.player-1)) {ctx.scale(-1, -1)}
+
+
+    if (!(window.player-1||false)) {
+        renderScale = {x:1,y:1}
+    } else {
+        renderScale = {x:-1,y:-1}
+
+
+    }
 
     ctx.drawImage(images.background, images.background.width*-0.5, images.background.height*-0.5)
 
@@ -29,6 +41,11 @@ function draw(state) {
     for (let i = 0; i < state.gameTokens.length; i++) {
         const token = state.gameTokens[i];
         var size = 20
+
+        ctx.save()
+
+
+        ctx.scale(renderScale.x, renderScale.y)
 
 
 
@@ -45,7 +62,7 @@ function draw(state) {
 
 
 
-
+        ctx.restore()
 
 
     }
@@ -54,7 +71,6 @@ function draw(state) {
     ctx.fillStyle = "#000"
 
 
-    ctx.save()
     for (let i = 0; i < renders.length; i++) {
         var render = renders[i];
 
@@ -67,20 +83,25 @@ function draw(state) {
 
             ...render,
         }
+        ctx.save()
+
 
         ctx.font = `bold ${render.size}px Shadows Into Light`
         ctx.fillStyle = render.color
         ctx.strokeStyle = "#fff"
 
+        ctx.translate(0, render.size*0.25)
+
 
         var string = render.text,
         width = ctx.measureText(string).width
-        ctx.strokeText(string, (-width/2)+render.x, render.y)
+        ctx.strokeText(string, ((-width/2)+(render.x*renderScale.x)), (render.y)*renderScale.y)
         ctx.font = `${render.size}px Shadows Into Light`
-        ctx.fillText(string, (-width/2)+render.x, render.y)
+        ctx.fillText(string, ((-width/2)+(render.x*renderScale.x)), (render.y)*renderScale.y)
+        ctx.restore()
+
 
     }
-    ctx.restore()
     renders = new Array()
     if (lobbyId) {
 

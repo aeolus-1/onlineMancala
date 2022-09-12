@@ -8,10 +8,10 @@ let depDim = {
     xGap:8.5
 }
 var hitboxes = [
-    {x:-470.5,y:-255,width:110,height:510,pos:0},
+    {x:-470,y:-255,width:110,height:510,pos:0},
 ]
 
-hitboxes.push(    {x:360.5,y:-255,width:110,height:510,pos:7},
+hitboxes.push(    {x:360,y:-255,width:110,height:510,pos:7},
     )
 for (let i = 0; i < 6; i++) {
     hitboxes.push({
@@ -296,7 +296,7 @@ function update(state) {
             renders.push({
                 text:`${currentState.deps[box.pos].length}`,
                 x:(box.width*0.5)+box.x,
-                y:box.y-10,
+                y:box.y+(box.height/2)+(box.height*0.55*Math.sign(box.y))+2,
             })
             if (box.pos!=0&&box.pos!=7) {
                 for (let i = 0; i < currentState.deps[box.pos].length; i++) {
