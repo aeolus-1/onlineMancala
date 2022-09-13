@@ -37,11 +37,62 @@
             z-index: 10;
 
         }
+        .helpButton {
+            position: absolute;
+            left: auto;
+            right: 0px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            margin: 5px;
+        }
+        .helpWindow {
+            overflow: auto;
+            position: fixed;
+            background: lightgrey;
+            width: 60vw;
+            min-height: 80vh;
+            left: 20%;
+            top: 5%;
+            border: groove 10px grey;
+            padding: 10px;
+        }
     </style>
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/biri/dist/biri.min.js"></script>
 </head>
 <body>
+
+    <button class="helpButton" onclick="(function(){
+        document.getElementsByClassName('helpWindow')[0].style.display = (document.getElementsByClassName('helpWindow')[0].style.display=='')?'none':''
+        return false;
+    })();return false;">
+    ?
+    <div class='helpWindow' style="display: none;">
+        <h2>Game Overview</h2>
+        <p>Mancala is really an easy game to play.</p>
+
+        <p>Players decide who goes first using whatever method they want; Rock-Paper-Scissors, coin flip, loser-of-last-game-goes-first, whatever.</p>
+
+        <p>During a turn, a player grabs all of the stones in a hole on either side and drops them, one by one, in succeeding holes in a counter-clockwise direction. Players MAY place stones in holes on their opponent's side. This continues until the player has no more stones in his hand. Excluding special rules, It is then their opponents turn.</p>
+
+        <h2>Special Rules</h2>
+        <ul>
+            <li>
+                Extra Turn<br>If the last stone you place down is in your own hole, you get another turn directtly after the go.
+            </li>
+            <li>
+                Stone Transfer<br>If the last stone you place down is in a empty hole, all the stones from the otherside of the board get transfered into the hole that the last stone fell into.
+            </li>
+        </ul>
+    
+        <p></p>
+
+        <p></p>
+    
+    </div>
+</button>
+
     <script>
         var colors = [
     "#f00",
@@ -111,11 +162,11 @@ setInterval(() => {
     <canvas id="c"></canvas>
 
     <div id="botSelection" style="display: none;">
-        Bsot Skill Level<br>
+        Bot Skill Level: 0.5<br>
         <input onchange="(function(){
             document.getElementById('botSelection').childNodes[0].textContent = `Bot Skill Level: ${document.getElementById('botSelection').children[1].value}`
             return false;
-        })();return false;"type="range" min="0" max="1" step="0.05" id="">
+        })();return false;" type="range" min="0" max="1" step="0.05" id="">
 
     </div>
 

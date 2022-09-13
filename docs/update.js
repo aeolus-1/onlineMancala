@@ -332,7 +332,7 @@ function update(state) {
                         if (currentState.turn!=playerTurn) {
                             var botTurn = () => {
                                 var skill = 1-parseFloat(document.getElementById("botSelection").children[1].value)
-                                GameState.makeMove(currentState, GameState.runAI(skill, 10*(skill)), 1)
+                                GameState.makeMove(currentState, GameState.runAI(skill, 100*(skill)), 1)
                                 if (currentState.turn!=playerTurn) {
                                     setTimeout(botTurn, 1000);
     
