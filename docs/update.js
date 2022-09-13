@@ -309,7 +309,7 @@ function update(state) {
                             x:newPos.x,
                             y:newPos.y,
 
-                            color:"#600",
+                            color:"#b00",
                             size:35,
                         })
                 }

@@ -70,7 +70,7 @@ function randChar() {
 }
 
 function getLobbyCode() {
-    return `${randChar()}${randChar()}${randChar()}${randChar()}`
+    return `${randChar()}${randChar()}${randChar()}`
 }
 
 var socket = io("https://socketioserver-aeolus.herokuapp.com/")

@@ -58,8 +58,36 @@
             by = score.split("_")[1],
             score = score.split("_")[0]
         if (score != undefined) {
+            var text = ""
+
+            if (localStorage.getItem("onlineMancalaScore") == null) {
+                localStorage.setItem("onlineMancalaScore", JSON.stringify({wins:0,losses:0,ties:0}))
+            }
+
+            var scoreObject = JSON.parse(localStorage.getItem("onlineMancalaScore"))
+
+            console.log(scoreObject)
+
+            if (score=="1") {
+                scoreObject.wins += 1
+                text = `Your ${scoreObject.wins} Win`
+            } else if (score=="-1") {
+                scoreObject.losses += 1
+                text = `Your ${scoreObject.losses} Loss`
+            } else {
+                scoreObject.ties += 1
+                text = `Your ${scoreObject.ties} Tie`
+            }  
+
+            localStorage.setItem("onlineMancalaScore", JSON.stringify(scoreObject))
+
 
             document.getElementById("h").innerHTML = `${["You Lost", "You guys tied", "You Won!"][parseInt(score)+1]}<br>${by}<br>👍`
+
+
+
+
+
         } else {
             document.getElementById("h").innerHTML = `You either glitched here or did something funky`
         }
